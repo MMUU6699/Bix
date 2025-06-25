@@ -1,0 +1,26 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.6' # أو حسب النسخة المناسبة للمشروع
+
+    - run: flutter pub get
+    - run: flutter build apk --release
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
