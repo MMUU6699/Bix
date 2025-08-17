@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:instagram_clone_flutter/models/user.dart';
-import 'package:instagram_clone_flutter/resources/auth_methods.dart';
+import 'package:index/models/user.dart';
+import 'package:index/resources/auth_methods.dart';
+import 'package:index/services/guest_service.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;
@@ -9,7 +10,21 @@ class UserProvider with ChangeNotifier {
   User get getUser => _user!;
 
   Future<void> refreshUser() async {
-    User user = await _authMethods.getUserDetails();
+    User user;
+    if (GuestService.isGuestMode) {
+      final guestData = GuestService.getGuestUserData();
+      user = User(
+        username: guestData['username'],
+        uid: guestData['uid'],
+        photoUrl: guestData['photoUrl'],
+        email: guestData['email'],
+        bio: guestData['bio'],
+        followers: guestData['followers'],
+        following: guestData['following'],
+      );
+    } else {
+      user = await _authMethods.getUserDetails();
+    }
     _user = user;
     notifyListeners();
   }

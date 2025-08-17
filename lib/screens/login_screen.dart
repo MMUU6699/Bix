@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:instagram_clone_flutter/resources/auth_methods.dart';
-import 'package:instagram_clone_flutter/responsive/mobile_screen_layout.dart';
-import 'package:instagram_clone_flutter/responsive/responsive_layout.dart';
-import 'package:instagram_clone_flutter/responsive/web_screen_layout.dart';
-import 'package:instagram_clone_flutter/screens/signup_screen.dart';
-import 'package:instagram_clone_flutter/utils/colors.dart';
-import 'package:instagram_clone_flutter/utils/global_variable.dart';
-import 'package:instagram_clone_flutter/utils/utils.dart';
-import 'package:instagram_clone_flutter/widgets/text_field_input.dart';
+import 'package:index/resources/auth_methods.dart';
+import 'package:index/responsive/mobile_screen_layout.dart';
+import 'package:index/responsive/responsive_layout.dart';
+import 'package:index/responsive/web_screen_layout.dart';
+import 'package:index/screens/signup_screen.dart';
+import 'package:index/services/guest_service.dart';
+import 'package:index/utils/colors.dart';
+import 'package:index/utils/global_variable.dart';
+import 'package:index/utils/utils.dart';
+import 'package:index/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -58,6 +59,19 @@ class _LoginScreenState extends State<LoginScreen> {
         showSnackBar(context, res);
       }
     }
+  }
+
+  void loginAsGuest() {
+    GuestService.enableGuestMode();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const ResponsiveLayout(
+          mobileScreenLayout: MobileScreenLayout(),
+          webScreenLayout: WebScreenLayout(),
+        ),
+      ),
+      (route) => false,
+    );
   }
 
   @override
@@ -122,6 +136,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       : const CircularProgressIndicator(
                           color: primaryColor,
                         ),
+                ),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              // Guest Login Button
+              InkWell(
+                onTap: loginAsGuest,
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: ShapeDecoration(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    color: Colors.grey[800],
+                  ),
+                  child: const Text(
+                    'دخول كضيف',
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
